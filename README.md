@@ -1,6 +1,6 @@
 # KV
 
-**TODO: Add description**
+Elixir Mix and OPT start guide.
 
 ## Installation
 
