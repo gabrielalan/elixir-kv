@@ -20,7 +20,9 @@ defmodule KV.RegistryTest do
 		KV.Registry.create(registry, "shopping")
 		{:ok, bucket} = KV.Registry.lookup(registry, "shopping")
 		Agent.stop(bucket)
-		# may led to some race conditions. If so, look at https://elixir-lang.org/getting-started/mix-otp/ets.html "bogus"
+
+		# Do a call to ensure the registry processed the DOWN message
+    _ = KV.Registry.create(registry, "bogus")
 		assert KV.Registry.lookup(registry, "shopping") == :error
 	end
 
@@ -30,6 +32,9 @@ defmodule KV.RegistryTest do
 	
 		# Stop the bucket with non-normal reason
 		Agent.stop(bucket, :shutdown)
+
+		# Do a call to ensure the registry processed the DOWN message
+    _ = KV.Registry.create(registry, "bogus")
 		assert KV.Registry.lookup(registry, "shopping") == :error
 	end
 end
